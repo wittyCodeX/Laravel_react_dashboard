@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/add_project', [ProjectController::class, 'store'])->name('add_project');
     Route::post('/updata_project', [ProjectController::class, 'updata'])->name('updata_project');
     Route::post('/delete_project', [ProjectController::class, 'delete'])->name('delete_project');
+    // Plans
+    Route::get('/plans', [PlanController::class, 'index'])->name('plans');
+    Route::post('/plans/update', [PlanController::class, 'update'])->name('update_plan');
+    Route::post('/plans/create', [PlanController::class, 'store'])->name('add_plan');
 });
 
 Route::middleware('auth')->group(function () {

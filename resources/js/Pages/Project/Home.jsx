@@ -46,7 +46,7 @@ const convertDate = (date) => {
 export default function Project() {
     const { projects: temp_projects, openCount, closeCount, finishCount } = usePage().props;
     const user = usePage().props.auth.user;
-    const [dateFrom, setDateFrom] = useState(moment().subtract(7, "days"));
+    const [dateFrom, setDateFrom] = useState(moment().subtract(15, "days"));
     const [dateTo, setDateTo] = useState(moment.now());
     const [projects, setProjects] = useState([]);
     const [open, setOpen] = useState(false);
@@ -93,21 +93,28 @@ export default function Project() {
         router.post(route("add_project"), {
             user_id: user.id,
             data: data
+        }, {
+            onSuccess: () => window.location.reload(),
+            onError: (errors) => console.error('Validation failed:', errors),
         });
-        window.location.reload();
+
     }
 
-    const updateProject = async (e) => {
+    const updateProject = async (id) => {
         router.post(route("updata_project"), {
-            id: e,
+            id: id,
             user_id: user.id,
             data: updata
+        }, {
+            onSuccess: () => alert('Project updataed successfully!'),
+            onError: (errors) => console.error('Validation failed:', errors),
         });
         setIsOpenUpdate("");
+
     }
-    const deleteProject = async (e) => {
+    const deleteProject = async (id) => {
         router.post(route("delete_project"), {
-            id: e,
+            id: id,
         });
     }
 
@@ -584,17 +591,14 @@ export default function Project() {
                                                         <td className="py-3 pr-5">
                                                             {value.user_id === user.id && <>
                                                                 <div className="flex items-center gap-1" >
-                                                                    <Button size="sm" color="success" onClick={() => updata_fun(value)}>Updata</Button>
-                                                                    <Button size="sm" color="warn" onClick={() => deleteProject(value.id)} >Delete</Button>
+                                                                    <Button size="sm" onClick={() => updata_fun(value)}>Updata</Button>
+                                                                    <Button size="sm" onClick={() => deleteProject(value.id)} >Delete</Button>
                                                                 </div >
                                                             </>
                                                             }
                                                         </td>
                                                     </tr>
                                                 }
-
-
-
                                             </>
 
                                         );
@@ -630,7 +634,7 @@ export default function Project() {
                 <DialogHeader>Add project.</DialogHeader>
                 <DialogBody>
                     <Card color="transparent" shadow={false}>
-                        <form className="w-full" onSubmit={saveProject}>
+                        <form className="w-full">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div>
                                     <Typography variant="h6" color="blue-gray">
@@ -674,22 +678,6 @@ export default function Project() {
                                         name="project_name"
                                         onChange={handleInput}
                                         value={data.project_name}
-                                    />
-                                </div>
-                                <div>
-                                    <Typography variant="h6" color="blue-gray">
-                                        your_role
-                                    </Typography>
-                                    <Input
-                                        className=" !border-t-blue-gray-200 focus:!border-t-gray-900 min-w-[100px!important]"
-                                        labelProps={{
-                                            className:
-                                                "before:content-none after:content-none",
-                                        }}
-                                        type="text"
-                                        name="your_role"
-                                        onChange={handleInput}
-                                        value={data.your_role}
                                     />
                                 </div>
                                 <div>
@@ -869,9 +857,6 @@ export default function Project() {
                                         <Option value="Finished" name="type">
                                             Finished
                                         </Option>
-                                        <Option value="Closed" name="type">
-                                            Closed
-                                        </Option>
                                     </Select>
                                 </div>
                             </div>
@@ -887,7 +872,8 @@ export default function Project() {
                                 <Button
                                     variant="gradient"
                                     color="green"
-                                    type="submit"
+                                    type="button"
+                                    onClick={saveProject}
                                 >
                                     <span>Save</span>
                                 </Button>

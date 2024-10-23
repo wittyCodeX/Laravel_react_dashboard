@@ -38,6 +38,7 @@ class ProjectController extends Controller
   }
   public function store(Request $request)
   {
+    //dd($request->user_id);
     $project = new Project();
     $project->type = $request->data['type'];
     $project->project_name = $request->data['project_name'];
@@ -55,8 +56,6 @@ class ProjectController extends Controller
     $project->user_id = $request->user_id;
 
     $project->save();
-
-    return back();
   }
   public function updata(Request $request)
   {
@@ -74,8 +73,6 @@ class ProjectController extends Controller
     $project->start_date = $data['start_date'];
     $project->status = $data['project_status'];
     $project->save();
-
-    //return "12312938471928379";
   }
   public function delete(Request $request)
   {
